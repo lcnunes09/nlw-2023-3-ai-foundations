@@ -29,6 +29,6 @@ export const download = (videoId) =>
         })
         .pipe(
 
-            fs.createWriteStream("./tmp/" + videoInfo + ".mp4")
+            fs.createWriteStream("./tmp/audio.mp4")
         )
     })
