@@ -1,20 +1,38 @@
-import cors from 'cors';
-import express from 'express';
-import { download } from './download.js';
+import cors from 'cors'
+import express from 'express'
 
-const app = express();
+import { download } from './download.js'
+import { transcribe } from './transcribe.js'
+import { summarize } from './summarize.js'
 
-app.use(cors());
+const app = express()
 
-app.get('/summary/:id', (request, response) => {
-    download(request.params.id)
+app.use(express.json())
+app.use(cors())
+
+app.get('/summary/:id', async (request, response) => {
+    await download(request.params.id)
     
-    response.json({ 
-        result: "Video downloaded!"
+    const result = await transcribe()
+    
+    return response.json({ 
+        result
     })
     
 })
 
-app.listen(3000, () =>
-  console.log('Server is running on localhost:3000')
+app.post('/summary', async (request, response) => {
+    const { text } = request.body
+    
+    const result = await summarize(text)
+    
+    return response.json({ 
+        result
+    })
+})
+
+const port = 3000;
+
+app.listen(port, () =>
+  console.log('Server is running on localhost:', port)
 );
